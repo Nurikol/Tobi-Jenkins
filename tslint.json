@@ -1,0 +1,15 @@
+{
+    "extends": [
+        "./node_modules/@dev-tools/tslint/tslint.json"
+    ],
+    "rules": {
+        "no-unsafe-any": false,
+        "strict-boolean-expressions": false,
+        "max-line-length": false,
+        "await-promise": {
+            "severity": "warning"
+        },
+        "no-console": [false, "log", "error"],
+        "radix": false
+    }
+}

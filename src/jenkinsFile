@@ -1,0 +1,69 @@
+pipeline {
+    agent any
+    stages {
+        stage('Commit'){
+            steps{
+                stageNode{
+                    sh '''echo Commit!
+                    echo ${STAGE_NAME}
+                    sleep 5
+                    cf --version'''
+                }
+            } 
+        }
+        stage('Integration'){
+            steps{
+                stageNode{
+                    // error('Failing build because...')
+                    sh '''echo Integration!
+                    echo ${STAGE_NAME}
+                    echo ${test}
+                    cf --version'''
+                }
+            }
+        }
+        stage('Production'){
+            steps{
+                stageNode{
+                    sh '''echo Production!
+                    echo ${STAGE_NAME}
+                    sleep 5
+                    cf --version'''
+                }
+            }   
+        }
+    }
+    post {
+        success {
+            notifyBuild("SUCCESSFUL")
+        }
+        failure {
+            notifyBuild("FAILURE")
+        }
+        aborted {
+            notifyBuild("ABORTED")
+        }
+    }
+}
+
+def stageNode(block) {
+    slackSend(color: '#3aa7e3', message: "Stage ${STAGE_NAME} is building...")
+    block()
+}
+
+def notifyBuild(String buildStatus) {
+    // if(buildStatus == 'STARTED'){
+    //     slackSend(color: '#2eb886', message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} ${buildStatus} (<${env.BUILD_URL}/console|Open>)")
+    // }
+    def  colorCode;
+    if (buildStatus == 'SUCCESSFUL'){
+        colorCode = '#2eb886'
+    }
+    else if (buildStatus == 'FAILURE'){
+        colorCode = '#ff0000'
+    }
+    else {
+        colorCode = '#daa038'
+    }
+    slackSend(color: colorCode, message: "${env.JOB_NAME} - #${env.BUILD_NUMBER} ${buildStatus}.(<${env.BUILD_URL}/console|Open>)")
+}

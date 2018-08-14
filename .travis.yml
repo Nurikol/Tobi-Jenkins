@@ -1,0 +1,18 @@
+language: node_js
+dist: trusty
+node_js:
+- '8.0'
+install:
+- npm install
+script:
+- npm run tslint
+- npm run compile
+- npm run test
+
+deploy:
+- provider: script
+  skip_cleanup: true
+  script: node_modules/.bin/tobi service:push $SERVICE_INSTANCE_ID $SERVICE_INSTANCE_SECRET $TRAVIS_TAG
+  on:
+    branch: master
+    tags: true

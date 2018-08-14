@@ -1,0 +1,9 @@
+{
+  "extends": "../node_modules/@dev-tools/tsconfig/tsconfig.json",
+  "compilerOptions": {
+      "sourceRoot": "./",
+      "rootDir": "./",
+      "outDir": "../dist",
+      "noImplicitAny": false,
+  }
+}
